@@ -23,5 +23,11 @@ export default {
             method: 'post',
             data: teacher
         })
+    },
+    getTeacherById(id){
+        return request({
+            url: `/eduservice/teacher/getTeacher/${id}`,
+            method: 'get',
+        })
     }
 }

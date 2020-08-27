@@ -5,7 +5,7 @@
         <el-input v-model="teacher.name"/>
       </el-form-item>
       <el-form-item label="讲师排序">
-        <el-input-number v-model="teacher.sort" controls-position="right" min="0"/>
+        <el-input-number v-model="teacher.sort" controls-position="right" :min="0"/>
       </el-form-item>
       <el-form-item label="讲师头衔">
         <el-select v-model="teacher.level" clearable placeholder="请选择">
@@ -51,7 +51,25 @@ export default {
     }
   },
 
+  created(){
+    //判断是修改还是添加，通过路由参数是否有id
+    if(this.$route.params && this.$route.params.id){
+      //从路由获取id
+      const id = this.$route.params.id
+      //渲染界面
+      this.getTeacherById(id)
+    }
+  },
+
   methods: {
+
+    //通过id查询讲师信息
+    getTeacherById(id){
+      teacherApi.getTeacherById(id)
+        .then(response => {
+          this.teacher = response.data.teacher
+        })
+    },
 
     saveOrUpdate() {
       this.saveBtnDisabled = true
