@@ -15,5 +15,13 @@ export default {
             url: `/eduservice/teacher/${id}`,
             method: 'delete'
         })
+    },
+    //添加讲师
+    save(teacher){
+        return request({
+            url: `/eduservice/teacher/addTeacher`,
+            method: 'post',
+            data: teacher
+        })
     }
 }
