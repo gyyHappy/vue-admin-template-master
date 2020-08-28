@@ -71,9 +71,27 @@ export default {
         })
     },
 
+    //调用保存或者修改方法
     saveOrUpdate() {
-      this.saveBtnDisabled = true
-      this.saveData()
+      if(this.teacher.id){
+        //修改
+        this.updateTeacher()
+      }else{
+        this.saveData()
+      }
+    },
+
+    //修改讲师信息
+    updateTeacher(){
+      teacherApi.updateTeacherInfo(this.teacher)
+        .then(response => {
+          this.$message({
+            type: "success",
+            message: "修改成功!",
+          });
+          //回到讲师列表
+          this.$router.push({path:'/teacher/table'})
+        })
     },
 
     // 保存
