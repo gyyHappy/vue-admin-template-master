@@ -10,6 +10,8 @@
       <el-step title="最终发布"/>
     </el-steps>
 
+
+
     <el-form label-width="120px">
 
       <el-form-item>
@@ -20,22 +22,36 @@
   </div>
 </template>
 <script>
+import chapter from "@/api/edu/chapter";
 export default {
     data() {
         return {
-            saveBtnDisabled:false
+            saveBtnDisabled:false,
+            chapterList: [],
+            courseId: '',
         }
     },
     created() {
-
+      if(this.$route.params && this.$route.params.id) {
+            this.courseId = this.$route.params.id
+            //根据课程id查询章节和小节
+            this.getChapterList()
+      }
     },
     methods:{
         previous() {
-            this.$router.push({path:'/course/info/1'})
+            this.$router.push({path:'/course/info/' + this.courseId})
         },
         next() {
             //跳转到第二步
-            this.$router.push({path:'/course/publish/1'})
+            this.$router.push({path:'/course/publish/' + this.courseId})
+        },
+        getChapterList(){
+            chapter.getChapterList(this.courseId)
+              .then(response => {
+                this.chapterList = response.data.list
+                console.log(this.chapterList)
+              })
         }
     }
 }

@@ -8,5 +8,24 @@ export default {
       method: 'post',
       data: courseInfoVO
     })
+  },
+  getListTeacher() {
+    return request({
+      url: `/eduservice/teacher/findAllTeacher`,
+      method: 'get',
+    })
+  },
+  getCourseInfo(courseId){
+    return request({
+      url: `/eduservice/educourse/getCourse/` + courseId,
+      method: 'get',
+    })
+  },
+  updateCourse(courseInfoVO){
+    return request({
+      url: `/eduservice/educourse/updateCourse/`,
+      method: 'post',
+      data: courseInfoVO
+    })
   }
 }

@@ -61,9 +61,9 @@
         />
       </el-form-item>
 
-      <!-- 课程简介 TODO -->
+      <!-- 课程简介-->
       <el-form-item label="课程简介">
-        <el-input v-model="courseInfo.description" placeholder=" " />
+        <tinymce :height="300" v-model="courseInfo.description" />
       </el-form-item>
 
       <!-- 课程封面 TODO -->
@@ -73,7 +73,7 @@
           :show-file-list="false"
           :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload"
-          :action="BASE_API+'/eduoss/fileoss'"
+          :action="BASE_API+'/eduoss/fileoss/upload'"
           class="avatar-uploader"
         >
           <img :src="courseInfo.cover" />
@@ -98,7 +98,9 @@
 <script>
 import course from "@/api/edu/course";
 import subject from "@/api/edu/subject";
+import Tinymce from "@/components/Tinymce";
 export default {
+  components: { Tinymce },
   data() {
     return {
       saveBtnDisabled: false,
@@ -119,6 +121,11 @@ export default {
     };
   },
   created() {
+    //获取路径id值
+    if (this.$route.params && this.$route.params.id) {
+      this.courseId = this.$route.params.id;
+      this.getInfo();
+    }
     //初始化所有讲师
     this.getListTeacher();
     //初始化一级分类
@@ -128,6 +135,30 @@ export default {
     //上传封面成功调用的方法
     handleAvatarSuccess(res, file) {
       this.courseInfo.cover = res.data.url;
+    },
+    //通过id回填信息
+    getInfo() {
+      course.getCourseInfo(this.courseId).then((response) => {
+        //在courseInfo课程基本信息，包含 一级分类id 和 二级分类id
+        this.courseInfo = response.data.courseInfoVO;
+        //1 查询所有的分类，包含一级和二级
+        subject.getSubjectList().then((response) => {
+          //2 获取所有一级分类
+          this.subjectOneList = response.data.list;
+          //3 把所有的一级分类数组进行遍历，
+          for (var i = 0; i < this.subjectOneList.length; i++) {
+            //获取每个一级分类
+            var oneSubject = this.subjectOneList[i];
+            //比较当前courseInfo里面一级分类id和所有的一级分类id
+            if (this.courseInfo.subjectParentId == oneSubject.id) {
+              //获取一级分类所有的二级分类
+              this.subjectTwoList = oneSubject.children;
+            }
+          }
+        });
+        //初始化所有讲师
+        this.getListTeacher();
+      });
     },
     //上传之前调用的方法
     beforeAvatarUpload(file) {
@@ -170,7 +201,8 @@ export default {
         this.teacherList = response.data.items;
       });
     },
-    saveOrUpdate() {
+    //添加课程
+    addCourse() {
       course.saveCourseInfo(this.courseInfo).then((response) => {
         //提示
         this.$message({
@@ -183,6 +215,33 @@ export default {
         });
       });
     },
+    //修改课程
+    updateCourse() {
+      course.updateCourse(this.courseInfo).then(response => {
+        //提示
+        this.$message({
+          type: "success",
+          message: "修改课程信息成功!",
+        });
+        //跳转到第二步
+        this.$router.push({
+          path: "/course/chapter/" + this.courseId,
+        });
+      })
+    },
+    //判断添加还是修改操作
+    saveOrUpdate() {
+      if (this.$route.params && this.$route.params.id) {
+        this.updateCourse()
+      }else{
+        this.addCourse()
+      }
+    },
   },
 };
 </script>
+<style scoped>
+.tinymce-container {
+  line-height: 29px;
+}
+</style>
