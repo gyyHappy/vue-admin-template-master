@@ -129,19 +129,17 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
-      })
-        .then(() => {
-          teacher.deleteTeacherId(id)
-            .then(response => {
-                this.$message({
-                  type: "success",
-                  message: "删除成功!",
-                });
-                //刷新列表
-                this.getList()
-            })
-        })
+      }).then(() => {
+        teacher.deleteTeacherId(id).then((response) => {
+          this.$message({
+            type: "success",
+            message: "删除成功!",
+          });
+          //刷新列表
+          this.getList();
+        });
+      });
     },
-  }
+  },
 };
 </script>
