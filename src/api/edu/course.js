@@ -12,13 +12,13 @@ export default {
   getListTeacher() {
     return request({
       url: `/eduservice/teacher/findAllTeacher`,
-      method: 'get',
+      method: 'get'
     })
   },
   getCourseInfo(courseId){
     return request({
       url: `/eduservice/educourse/getCourse/` + courseId,
-      method: 'get',
+      method: 'get'
     })
   },
   updateCourse(courseInfoVO){
@@ -27,5 +27,34 @@ export default {
       method: 'post',
       data: courseInfoVO
     })
-  }
+  },
+  //查询确认课程信息
+  getPublishCourseInfo(id){
+    return request({
+      url: `/eduservice/educourse/getPublishCourseInfo/` + id,
+      method: 'get'
+    })
+  },
+  //发布课程
+  publishCourse(id){
+    return request({
+      url: `/eduservice/educourse/publishCourse/` + id,
+      method: 'post'
+    })
+  },
+  //分页条件查询
+  pageListCondition(current,limit,courseQuery){
+    return request({
+      url: `/eduservice/educourse/pageListCondition/${current}/${limit}`,
+      method: 'post',
+      data: courseQuery
+    })
+  },
+  //删除课程信息
+  deleteCourse(id){
+    return request({
+      url: `/eduservice/educourse/deleteCourse/` + id,
+      method: 'delete',
+    })
+  },
 }
