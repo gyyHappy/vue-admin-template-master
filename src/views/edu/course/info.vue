@@ -164,6 +164,12 @@ export default {
     beforeAvatarUpload(file) {
       const isJPG = file.type === "image/jpeg";
       const isLt2M = file.size / 1024 / 1024 < 2;
+      const width = file.width;
+      const height = file.height;
+
+      if(width != 1200 || height != 480){
+        this.$message.error("请上传1200 X 480格式的图片!");
+      }
 
       if (!isJPG) {
         this.$message.error("上传头像图片只能是 JPG 格式!");
